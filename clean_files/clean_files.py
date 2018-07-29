@@ -3,8 +3,36 @@ import csv
 
 def check_major(row):
 	new_row = row.strip() 
-	if row == "":
+	if row == "Chemical Engineering and Biological" or row == "Chemical Engineering and Biological Engineering":
 		new_row = "CE"
+	elif row == "Chemistry and Geochemistry":
+		new_row = "CH"
+	elif row == "Computer Science":
+		new_row = "CS"
+	elif row == "Electrical Engineering":
+		new_row = "EE"
+	elif row == "Economics and Business":
+		new_row = "EB"
+	elif row == "Civil and Environmental Engineering":
+		new_row = "CEE"
+	elif row == "Geology and Geological Engineering":
+		new_row = "GE"
+	elif row == "Geophysics":
+		new_row = "GP"
+	elif row == "Mechanical Engineering":
+		new_row = "ME"
+	elif row == "Mathematics and Statistics" or row == "Mathematics & Statistics":
+		new_row = "AMS"
+	elif row == "Metallurgical and Materials Science":
+		new_row = "MME"
+	elif row == "Mining Engineering" or row == "Mining":
+		new_row = "MN"
+	elif row == "Petroleum Engineering" or row == "Petroleum":
+		new_row = "PE"
+	elif row == "Physics":
+		new_row = "PH"
+	elif row == "Any Major" or row == "any major":
+		new_row = "ANY"
 	return new_row
 
 def main():
@@ -21,15 +49,15 @@ def main():
 
 	new_student_rows = []
 	with open(students[0], 'rb') as csvfile:
-		student_reader = csv.reader(csvfile, delimiter = ',', quotechar='|')
+		student_reader = csv.reader(csvfile)
 		for row in student_reader:
 			temp_row = []
 			temp_row.append(row[3]) #last name
 			temp_row.append(row[2]) #first name
 			temp_row.append(row[6]) #year in school
-			temp_row.append(row[10]) #1st preference
-			temp_row.append(row[11]) #2nd preference
-			temp_row.append(row[12]) #3rd preference 
+			temp_row.append(check_major(row[10])) #1st preference
+			temp_row.append(check_major(row[11])) #2nd preference
+			temp_row.append(check_major(row[12])) #3rd preference 
 			new_student_rows.append(temp_row)
 
 	#Officers
@@ -45,15 +73,15 @@ def main():
 		return -1
 
 	with open(officers[0], 'rb') as csvfile:
-		officer_reader = csv.reader(csvfile, delimiter = ',', quotechar='|')
+		officer_reader = csv.reader(csvfile)
 		for row in officer_reader:
 			temp_row = []
 			temp_row.append(row[1]) #last name
 			temp_row.append(row[2]) #first name
 			temp_row.append(row[10]) #year in school 
-			temp_row.append(row[11]) #1st preference 
-			temp_row.append(row[12]) #2nd preference 
-			temp_row.append(row[13]) #3rd preference 
+			temp_row.append(check_major(row[11])) #1st preference 
+			temp_row.append(check_major(row[12])) #2nd preference 
+			temp_row.append(check_major(row[13])) #3rd preference 
 			new_student_rows.append(temp_row)
 
 	#Write them all out 
@@ -66,9 +94,67 @@ def main():
 				student_writer.writerow(row)
 
 	#Companies 
+	new_rec_rows = []
+	rec = glob.glob("recruiter*.csv")
+	
+	if len(rec) > 1:
+		print ("Please have only one recruiters file")
+		return -1
+
+	if len(rec) < 1:
+		print ("Please have more than one recruiters file")
+		return -1
+
+	with open(rec[0], 'rb') as csvfile:
+		rec_reader = csv.reader(csvfile)
+		for row in rec_reader:
+			temp_row = []
+			temp_row.append(row[10])
+			print (row[16])
+			temp_row.append(check_major(row[16]))
+			temp_row.append(check_major(row[17]))
+			temp_row.append(check_major(row[18]))
+			num_reps = row[21][0].strip()
+			#temp_row.append(row[5]) #last name 
+			#temp_row.append(row[3] + ' ' + row[4]) #title + first name
+			#temp_row.append(row[6]) #postion 
+			#temp_row.append(check_major(row[7])) #deparment
+			new_rec_rows.append(temp_row)
+
+	del new_rec_rows[0]
+	with open('recruiters.csv', 'wb') as csvfile:
+		recruiter_writer = csv.writer(csvfile, delimiter=',')
+		for row in new_rec_rows:
+			if row[0] != '' or row[1] != '':
+				recruiter_writer.writerow(row)
+
 
 	#Faculty
 	new_faculty_rows = []
+	fac = glob.glob("faculty*.csv")
+	
+	if len(fac) > 1:
+		print ("Please have only one faculty file")
+		return -1
+
+	if len(fac) < 1:
+		print ("Please have more than one faculty file")
+		return -1
+
+	with open(fac[0], 'rb') as csvfile:
+		fac_reader = csv.reader(csvfile)
+		for row in fac_reader:
+			temp_row = []
+			temp_major = check_major(row[8])
+			num_reps = row[9].strip()
+			
+			#temp_row.append(row[5]) #last name 
+			#temp_row.append(row[3] + ' ' + row[4]) #title + first name
+			#temp_row.append(row[6]) #postion 
+			#temp_row.append(check_major(row[7])) #deparment
+			#new_faculty_rows.append(temp_row)
+	
+	fac_len = len(new_faculty_rows)
 
 	#Vips
  	vips = glob.glob("vip*.csv")
@@ -82,14 +168,14 @@ def main():
 		return -1
 
 	with open(vips[0], 'rb') as csvfile:
-		vips_reader = csv.reader(csvfile, delimiter = ',', quotechar='|')
+		vips_reader = csv.reader(csvfile)
 		for row in vips_reader:
 			temp_row = []
 			if row[0] == 'Yes':
 				temp_row.append(row[5]) #last name 
 				temp_row.append(row[3] + ' ' + row[4]) #title + first name
 				temp_row.append(row[6]) #postion 
-				temp_row.append(row[7]) #deparment
+				temp_row.append(check_major(row[7])) #deparment
 				new_faculty_rows.append(temp_row)
 	
 	vips_len = len(new_faculty_rows)
@@ -105,14 +191,15 @@ def main():
 		return -1
 
 	with open(dhs[0], 'rb') as csvfile:
-		dhs_reader = csv.reader(csvfile, delimiter = ',', quotechar='|')
+		dhs_reader = csv.reader(csvfile)
 		for row in dhs_reader:
-			temp_row = []
-			temp_row.append(row[1]) #last name 
-			temp_row.append(row[0] + ' ' + row[2]) #title + first name 
-			temp_row.append(row[4]) #position
-			temp_row.append(row[5]) #department 
-			new_faculty_rows.append(temp_row)
+			if row[0] == 'Yes':
+				temp_row = []
+				temp_row.append(row[2]) #last name 
+				temp_row.append(row[1] + ' ' + row[3]) #title + first name 
+				temp_row.append(row[5]) #position
+				temp_row.append(check_major(row[6])) #department 
+				new_faculty_rows.append(temp_row)
 
 	#Write them all out 
 	#del new_faculty_rows[0]
