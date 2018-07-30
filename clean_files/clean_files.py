@@ -35,6 +35,15 @@ def check_major(row):
 		new_row = "ANY"
 	return new_row
 
+def names(full_name):
+	names_arr = []
+	full_name_split = full_name.split(' ')
+	#TODO: handle not two names people 
+	last = full_name_split[-1]
+	first = full_name_split[0]
+	return last, first
+	
+
 def main():
 	students = glob.glob("students*.csv")
 
@@ -108,18 +117,27 @@ def main():
 	with open(rec[0], 'rb') as csvfile:
 		rec_reader = csv.reader(csvfile)
 		for row in rec_reader:
-			temp_row = []
-			temp_row.append(row[10])
-			print (row[16])
-			temp_row.append(check_major(row[16]))
-			temp_row.append(check_major(row[17]))
-			temp_row.append(check_major(row[18]))
+			company = row[10]
+			major_1 = check_major(row[16])
+			major_2 = check_major(row[17])
+			major_3 = check_major(row[18])
 			num_reps = row[21][0].strip()
-			#temp_row.append(row[5]) #last name 
-			#temp_row.append(row[3] + ' ' + row[4]) #title + first name
-			#temp_row.append(row[6]) #postion 
-			#temp_row.append(check_major(row[7])) #deparment
-			new_rec_rows.append(temp_row)
+			if num_reps != 'N':
+				num_to_go_to = int(num_reps)*3 + 23
+				curr_num = 23
+				while curr_num <= num_to_go_to:
+					temp_row = []
+					last,first = names(row[curr_num])
+					temp_row.append(last)
+					temp_row.append(first)
+					temp_row.append(row[curr_num+1])
+					temp_row.append(company)
+					temp_row.append(major_1)
+					temp_row.append(major_2)
+					temp_row.append(major_3)
+					curr_num += 4
+					new_rec_rows.append(temp_row)
+					
 
 	del new_rec_rows[0]
 	with open('recruiters.csv', 'wb') as csvfile:
