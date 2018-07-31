@@ -2,36 +2,37 @@ import glob
 import csv 
 
 def check_major(row):
-	new_row = row.strip() 
-	if row == "Chemical Engineering and Biological" or row == "Chemical Engineering and Biological Engineering":
+	row = row.strip()
+	new_row = row 
+	if row == "Chemical Engineering and Biological" or row == "Chemical Engineering and Biological Engineering" or row == "Chemical and Biological Engineering Department":
 		new_row = "CE"
-	elif row == "Chemistry and Geochemistry":
+	elif row == "Chemistry and Geochemistry" or row == "Chemistry and Geochemistry Department":
 		new_row = "CH"
-	elif row == "Computer Science":
+	elif row == "Computer Science" or row == "Computer Science Division":
 		new_row = "CS"
-	elif row == "Electrical Engineering":
+	elif row == "Electrical Engineering" or row == "Electrical Engineering Division":
 		new_row = "EE"
-	elif row == "Economics and Business":
+	elif row == "Economics and Business" or row == "Economics and Business Division":
 		new_row = "EB"
-	elif row == "Civil and Environmental Engineering":
+	elif row == "Civil and Environmental Engineering" or row == "Civil and Environmental Engineering Department" or row == "Civil & Environmental Engineering":
 		new_row = "CEE"
-	elif row == "Geology and Geological Engineering":
+	elif row == "Geology and Geological Engineering" or row == "Geology and Geological Engineering Department":
 		new_row = "GE"
-	elif row == "Geophysics":
+	elif row == "Geophysics" or row == "Geophysics Department":
 		new_row = "GP"
-	elif row == "Mechanical Engineering":
+	elif row == "Mechanical Engineering" or row == "Mechanical Engineering Department": 
 		new_row = "ME"
-	elif row == "Mathematics and Statistics" or row == "Mathematics & Statistics":
+	elif row == "Mathematics and Statistics" or row == "Mathematics & Statistics" or row == "Applied Mathematics and Statistics Department": 
 		new_row = "AMS"
-	elif row == "Metallurgical and Materials Science":
+	elif row == "Metallurgical and Materials Science" or row == "Metallurgical and Materials Engineering Department":
 		new_row = "MME"
-	elif row == "Mining Engineering" or row == "Mining":
+	elif row == "Mining Engineering" or row == "Mining" or row == "Mining Engineering Department":
 		new_row = "MN"
-	elif row == "Petroleum Engineering" or row == "Petroleum":
+	elif row == "Petroleum Engineering" or row == "Petroleum" or row == "Petroleum Engineering Department":
 		new_row = "PE"
-	elif row == "Physics":
+	elif row == "Physics" or row == "Physics Department":
 		new_row = "PH"
-	elif row == "Any Major" or row == "any major":
+	elif row == "Any Major" or row == "any major" or row == "Humanities, Arts and Social Sciences Division":
 		new_row = "ANY"
 	return new_row
 
@@ -42,10 +43,25 @@ def names(full_name):
 	last = full_name_split[-1]
 	first = full_name_split[0]
 	return last, first
-	
+
+def check_year(year):
+	year = year.strip()
+	num_year = year
+	if year == "Freshman":
+		num_year = 1
+	elif year == "Sophomore":
+		num_year = 2
+	elif year == "Junior":
+		num_year = 3
+	elif year == "Senior":
+		num_year = 4
+	elif year == "Graduate Student" or year == "Grad Student":
+		num_year = 5
+
+	return num_year 	
 
 def main():
-	students = glob.glob("students*.csv")
+	students = glob.glob("../../test_files/students*.csv")
 
 	#Students 
 	if len(students) > 1:
@@ -63,7 +79,7 @@ def main():
 			temp_row = []
 			temp_row.append(row[3]) #last name
 			temp_row.append(row[2]) #first name
-			temp_row.append(row[6]) #year in school
+			temp_row.append(check_year(row[6])) #year in school
 			temp_row.append(check_major(row[10])) #1st preference
 			temp_row.append(check_major(row[11])) #2nd preference
 			temp_row.append(check_major(row[12])) #3rd preference 
@@ -71,7 +87,7 @@ def main():
 
 	#Officers
 	student_len = len(new_student_rows)
-	officers = glob.glob("officers*.csv")
+	officers = glob.glob("../../test_files/officers*.csv")
 
 	if len(officers) > 1:
 		print ("Please have only one officers file")
@@ -87,7 +103,7 @@ def main():
 			temp_row = []
 			temp_row.append(row[1]) #last name
 			temp_row.append(row[2]) #first name
-			temp_row.append(row[10]) #year in school 
+			temp_row.append(check_year(row[10])) #year in school 
 			temp_row.append(check_major(row[11])) #1st preference 
 			temp_row.append(check_major(row[12])) #2nd preference 
 			temp_row.append(check_major(row[13])) #3rd preference 
@@ -104,7 +120,7 @@ def main():
 
 	#Companies 
 	new_rec_rows = []
-	rec = glob.glob("recruiter*.csv")
+	rec = glob.glob("../../test_files/recruiter*.csv")
 	
 	if len(rec) > 1:
 		print ("Please have only one recruiters file")
@@ -117,10 +133,10 @@ def main():
 	with open(rec[0], 'rb') as csvfile:
 		rec_reader = csv.reader(csvfile)
 		for row in rec_reader:
-			company = row[10]
-			major_1 = check_major(row[16])
-			major_2 = check_major(row[17])
-			major_3 = check_major(row[18])
+			company = row[10] #company
+			major_1 = check_major(row[16]) #preference 1
+			major_2 = check_major(row[17]) #preference 2
+			major_3 = check_major(row[18]) #preference 3
 			num_reps = row[21][0].strip()
 			if num_reps != 'N':
 				num_to_go_to = int(num_reps)*3 + 23
@@ -128,13 +144,13 @@ def main():
 				while curr_num <= num_to_go_to:
 					temp_row = []
 					last,first = names(row[curr_num])
-					temp_row.append(last)
-					temp_row.append(first)
-					temp_row.append(row[curr_num+1])
-					temp_row.append(company)
-					temp_row.append(major_1)
-					temp_row.append(major_2)
-					temp_row.append(major_3)
+					temp_row.append(last) #last name 
+					temp_row.append(first) #first name 
+					temp_row.append(row[curr_num+1]) #title 
+					temp_row.append(company) #company 
+					temp_row.append(major_1) #preference 1
+					temp_row.append(major_2) #preference 2
+					temp_row.append(major_3) #preference 3
 					curr_num += 4
 					new_rec_rows.append(temp_row)
 					
@@ -149,7 +165,7 @@ def main():
 
 	#Faculty
 	new_faculty_rows = []
-	fac = glob.glob("faculty*.csv")
+	fac = glob.glob("../../test_files/faculty*.csv")
 	
 	if len(fac) > 1:
 		print ("Please have only one faculty file")
@@ -164,18 +180,24 @@ def main():
 		for row in fac_reader:
 			temp_row = []
 			temp_major = check_major(row[8])
-			num_reps = row[9].strip()
-			
-			#temp_row.append(row[5]) #last name 
-			#temp_row.append(row[3] + ' ' + row[4]) #title + first name
-			#temp_row.append(row[6]) #postion 
-			#temp_row.append(check_major(row[7])) #deparment
-			#new_faculty_rows.append(temp_row)
+			num_reps = row[9][0].strip()
+			if num_reps != 'N':
+				num_to_go_to = int(num_reps)*3 + 10
+				curr_num = 10
+				while curr_num < num_to_go_to:
+					temp_row = []
+					last,first = names(row[curr_num])
+					temp_row.append(last) #last name 
+					temp_row.append(first) #first name 
+					temp_row.append(row[curr_num+1]) #title 
+					temp_row.append(check_major(temp_major)) #major 
+					curr_num += 3
+					new_faculty_rows.append(temp_row)
 	
 	fac_len = len(new_faculty_rows)
 
 	#Vips
- 	vips = glob.glob("vip*.csv")
+ 	vips = glob.glob("../../test_files/vip*.csv")
 
 	if len(vips) > 1:
 		print ("Please have only one VIPs file")
@@ -198,7 +220,7 @@ def main():
 	
 	vips_len = len(new_faculty_rows)
 	#DHs
- 	dhs = glob.glob("dh*.csv")
+ 	dhs = glob.glob("../../test_files/dh*.csv")
 
 	if len(dhs) > 1:
 		print ("Please have only one DHs file")
@@ -220,7 +242,7 @@ def main():
 				new_faculty_rows.append(temp_row)
 
 	#Write them all out 
-	#del new_faculty_rows[0]
+	del new_faculty_rows[0]
 	del new_faculty_rows[vips_len]
 	with open('faculty.csv', 'wb') as csvfile:
 		faculty_writer = csv.writer(csvfile, delimiter=',')
