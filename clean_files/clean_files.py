@@ -3,7 +3,7 @@ import csv
 
 def check_major(row):
 	row = row.strip()
-	new_row = row 
+	new_row = "ANY"#row
 	if row == "Chemical Engineering and Biological" or row == "Chemical Engineering and Biological Engineering" or row == "Chemical and Biological Engineering Department":
 		new_row = "CE"
 	elif row == "Chemistry and Geochemistry" or row == "Chemistry and Geochemistry Department":
@@ -24,7 +24,7 @@ def check_major(row):
 		new_row = "ME"
 	elif row == "Mathematics and Statistics" or row == "Mathematics & Statistics" or row == "Applied Mathematics and Statistics Department": 
 		new_row = "AMS"
-	elif row == "Metallurgical and Materials Science" or row == "Metallurgical and Materials Engineering Department":
+	elif row == "Metallurgical and Materials Science" or row == "Metallurgical and Materials Engineering Department" or row == "Metallurgical and Materials Engineering":
 		new_row = "MME"
 	elif row == "Mining Engineering" or row == "Mining" or row == "Mining Engineering Department":
 		new_row = "MN"
@@ -42,6 +42,17 @@ def names(full_name):
 	#TODO: handle not two names people 
 	last = full_name_split[-1]
 	first = full_name_split[0]
+	if len(full_name_split) == 3:
+		if last == "Jr.":
+			last = full_name_split[1] + " " + last
+		else:
+			first = first + " " + full_name_split[1]
+	if len(full_name_split) > 3:
+		if first == "TBD":
+			last = "TBD"
+		else:
+			first = first + " " + full_name_split[1]
+			last = full_name_split[2] + " " + last
 	return last, first
 
 def check_year(year):
@@ -155,7 +166,6 @@ def main():
 					new_rec_rows.append(temp_row)
 					
 
-	del new_rec_rows[0]
 	with open('recruiters.csv', 'wb') as csvfile:
 		recruiter_writer = csv.writer(csvfile, delimiter=',')
 		for row in new_rec_rows:
@@ -190,7 +200,7 @@ def main():
 					temp_row.append(last) #last name 
 					temp_row.append(first) #first name 
 					temp_row.append(row[curr_num+1]) #title 
-					temp_row.append(check_major(temp_major)) #major 
+					temp_row.append(temp_major) #major 
 					curr_num += 3
 					new_faculty_rows.append(temp_row)
 	
@@ -242,8 +252,6 @@ def main():
 				new_faculty_rows.append(temp_row)
 
 	#Write them all out 
-	del new_faculty_rows[0]
-	del new_faculty_rows[vips_len]
 	with open('faculty.csv', 'wb') as csvfile:
 		faculty_writer = csv.writer(csvfile, delimiter=',')
 		for row in new_faculty_rows:
