@@ -39,7 +39,6 @@ def check_major(row):
 def names(full_name):
 	names_arr = []
 	full_name_split = full_name.split(' ')
-	#TODO: handle not two names people 
 	last = full_name_split[-1]
 	first = full_name_split[0]
 	if len(full_name_split) == 3:
@@ -72,7 +71,8 @@ def check_year(year):
 	return num_year 	
 
 def main():
-	students = glob.glob("../../test_files/students*.csv")
+	input_files = "../../test_files/"
+	students = glob.glob(input_files + "students*.csv")
 
 	#Students 
 	if len(students) > 1:
@@ -98,7 +98,7 @@ def main():
 
 	#Officers
 	student_len = len(new_student_rows)
-	officers = glob.glob("../../test_files/officers*.csv")
+	officers = glob.glob(input_files + "officers*.csv")
 
 	if len(officers) > 1:
 		print ("Please have only one officers file")
@@ -131,7 +131,7 @@ def main():
 
 	#Companies 
 	new_rec_rows = []
-	rec = glob.glob("../../test_files/recruiter*.csv")
+	rec = glob.glob(input_files + "recruiter*.csv")
 	
 	if len(rec) > 1:
 		print ("Please have only one recruiters file")
@@ -175,7 +175,7 @@ def main():
 
 	#Faculty
 	new_faculty_rows = []
-	fac = glob.glob("../../test_files/faculty*.csv")
+	fac = glob.glob(input_files + "faculty*.csv")
 	
 	if len(fac) > 1:
 		print ("Please have only one faculty file")
@@ -207,7 +207,7 @@ def main():
 	fac_len = len(new_faculty_rows)
 
 	#Vips
- 	vips = glob.glob("../../test_files/vip*.csv")
+ 	vips = glob.glob(input_files + "vip*.csv")
 
 	if len(vips) > 1:
 		print ("Please have only one VIPs file")
@@ -230,7 +230,7 @@ def main():
 	
 	vips_len = len(new_faculty_rows)
 	#DHs
- 	dhs = glob.glob("../../test_files/dh*.csv")
+ 	dhs = glob.glob(input_files + "dh*.csv")
 
 	if len(dhs) > 1:
 		print ("Please have only one DHs file")
